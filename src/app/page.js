@@ -1,65 +1,103 @@
-import Image from "next/image";
+'use client'
+import { useState } from "react";
+import Sidebar from "@/components/Sidebar";
+import './globals.css';
 
-export default function Home() {
+export default function HomePage() {
+
+  const posts = [
+    {
+      id: 1,
+      user: 'Alex Johnson',
+      username: '@alexj',
+      avatar: 'https://i.pravatar.cc/150?img=65',
+      content: 'Just deployed my new portfolio! 🚀 #webdev #portfolio',
+      media: { type: 'image', src: 'https://picsum.photos/id/1011/600/400' },
+      timestamp: '2:30 PM · Feb 17, 2026',
+    },
+    {
+      id: 2,
+      user: 'Sophie Lee',
+      username: '@sophie_lee',
+      avatar: 'https://i.pravatar.cc/150?img=66',
+      content: 'Loved this sunset 🌅',
+      media: { type: 'image', src: 'https://picsum.photos/id/1025/600/400' },
+      timestamp: '1:15 PM · Feb 17, 2026',
+    },
+    {
+      id: 3,
+      user: 'Richard Michaels',
+      username: '@richard_m',
+      avatar: 'https://i.pravatar.cc/150?img=67',
+      content: 'Check out this CSS animation I made!',
+      media: { type: 'video', src: 'https://www.w3schools.com/html/mov_bbb.mp4', poster: 'https://picsum.photos/id/1035/600/400' },
+      timestamp: '12:00 PM · Feb 17, 2026',
+    },
+  ];
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.js file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+     <div className="home-container">
+    
+
+
+
+      <div className="feed">
+        {posts.map(post => (
+          <div key={post.id} className="post" onClick={() => setOpenPost(post)}>
+            <div className="post-header">
+              <div className="user-info">
+                <img src={post.avatar} className="avatar" />
+                <div>
+                  <strong>{post.user}</strong>
+                  <p>{post.username}</p>
+                </div>
+              </div>
+              <div className="post-menu">⋯</div>
+            </div>
+
+            {post.content && <p className="post-content">{post.content}</p>}
+
+            {post.media && post.media.type === 'image' && (
+              <img src={post.media.src} className="post-media" />
+            )}
+            {post.media && post.media.type === 'video' && (
+              <video controls poster={post.media.poster} className="post-media">
+                <source src={post.media.src} type="video/mp4" />
+              </video>
+            )}
+
+            <div className="post-actions">
+              <button>❤️ Like</button>
+              <button>💬 Comment</button>
+              <button>🔄 Share</button>
+              <button>💾 Save</button>
+            </div>
+
+            <p className="timestamp">{post.timestamp}</p>
+          </div>
+        ))}
+      </div>
+
+      {openPost && (
+        <div className="modal-backdrop" onClick={() => setOpenPost(null)}>
+          <div className="modal-content" onClick={e => e.stopPropagation()}>
+            <button className="modal-close" onClick={() => setOpenPost(null)}>✕</button>
+            {openPost.media && openPost.media.type === 'image' && <img src={openPost.media.src} />}
+            {openPost.media && openPost.media.type === 'video' && (
+              <video controls poster={openPost.media.poster}>
+                <source src={openPost.media.src} type="video/mp4" />
+              </video>
+            )}
+            <p>{openPost.content}</p>
+            <div className="post-actions">
+              <button>❤️ Like</button>
+              <button>💬 Comment</button>
+              <button>🔄 Share</button>
+              <button>💾 Save</button>
+            </div>
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+      )}
     </div>
   );
 }
